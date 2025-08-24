@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ôn tập tiếng Anh lớp 7 - 20 Short Answers</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #e6f7ff;
+            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .container {
+            width: 100%;
+            max-width: 900px;
+            background: #ffffff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #005f99;
+            font-size: 2.2em;
+            margin-bottom: 10px;
+            border-bottom: 2px solid #005f99;
+            padding-bottom: 10px;
+        }
+        p.intro {
+            text-align: center;
+            font-size: 1.1em;
+            color: #555;
+            margin-bottom: 30px;
+        }
+        .question-box {
+            margin-bottom: 20px;
+            padding: 15px;
+            border: 1px solid #cceeff;
+            border-radius: 8px;
+            background-color: #f0faff;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .question-text {
+            font-size: 1.1em;
+            font-weight: 500;
+        }
+        .input-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .answer-input {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #aaddff;
+            border-radius: 5px;
+            font-size: 1em;
+        }
+        .check-btn {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: background-color 0.3s ease;
+        }
+        .check-btn:hover {
+            background-color: #0056b3;
+        }
+        .result {
+            font-weight: bold;
+            font-size: 1em;
+            margin-top: 5px;
+        }
+        .correct {
+            color: #28a745;
+        }
+        .incorrect {
+            color: #dc3545;
+        }
+        .summary {
+            margin-top: 40px;
+            text-align: center;
+            padding: 30px;
+            border: 3px dashed #005f99;
+            border-radius: 12px;
+            background-color: #e0f2ff;
+        }
+        #scoreDisplay {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #005f99;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Ôn tập tiếng Anh lớp 7 📚</h1>
+    <p class="intro">Hãy trả lời 20 câu hỏi dưới đây. Nhập câu trả lời vào ô trống và nhấn "Kiểm tra" để xem kết quả.</p>
+
+    <div id="quiz-container">
+        </div>
+
+    <div class="summary" id="summary-section" style="display:none;">
+        <h2>Kết quả của bạn 🏅</h2>
+        <p>Bạn đã hoàn thành 20 câu hỏi.</p>
+        <div id="scoreDisplay"></div>
+    </div>
+</div>
+
+<script>
+    // Định nghĩa 20 câu hỏi và đáp án đúng, phù hợp với kiến thức lớp 7
+    const quizData = [
+        { question: "What is the past tense of 'play'?", answer: "played" },
+        { question: "Fill in the blank: She ____ a new book yesterday. (buy)", answer: "bought" },
+        { question: "What is the opposite of 'easy'?", answer: "difficult" },
+        { question: "Change the verb to 'V-ing' form: 'run'", answer: "running" },
+        { question: "Where do you often see a kangaroo?", answer: "Australia" },
+        { question: "Fill in the blank: My family lives ____ a small village. (preposition)", answer: "in" },
+        { question: "What is the superlative form of 'tall'?", answer: "tallest" },
+        { question: "Complete the sentence: 'How many ____ are there in the bag?' (apple)", answer: "apples" },
+        { question: "What is the past tense of 'do'?", answer: "did" },
+        { question: "What is the opposite of 'happy'?", answer: "sad" },
+        { question: "What is the name of the month after January?", answer: "February" },
+        { question: "Fill in the blank: We are going to visit our grandparents ____ the weekend. (preposition)", answer: "at" },
+        { question: "What is the past tense of 'have'?", answer: "had" },
+        { question: "What is the opposite of 'thin'?", answer: "fat" },
+        { question: "The verb 'was' is the past form of 'is' and '____'.", answer: "am" },
+        { question: "How do you spell the number after eight?", answer: "nine" },
+        { question: "Fill in the blank: He is a very ____ student. (care)", answer: "careful" },
+        { question: "What is the opposite of 'clean'?", answer: "dirty" },
+        { question: "Complete the sentence: 'She likes listening ____ music.' (preposition)", answer: "to" },
+        { question: "What is the past tense of 'see'?", answer: "saw" }
+    ];
+
+    const quizContainer = document.getElementById('quiz-container');
+    const summarySection = document.getElementById('summary-section');
+    const scoreDisplay = document.getElementById('scoreDisplay');
+    let correctAnswersCount = 0;
+    let questionsAnswered = 0;
+
+    // Hàm tạo và hiển thị từng câu hỏi
+    function createQuestionElement(data, index) {
+        const questionBox = document.createElement('div');
+        questionBox.className = 'question-box';
+        questionBox.innerHTML = `
+            <div class="question-text">Câu ${index + 1}: ${data.question}</div>
+            <div class="input-group">
+                <input type="text" id="answer-${index}" class="answer-input" placeholder="Nhập câu trả lời của bạn">
+                <button class="check-btn" onclick="checkAnswer(${index})">Kiểm tra</button>
+            </div>
+            <div id="result-${index}" class="result"></div>
+        `;
+        quizContainer.appendChild(questionBox);
+    }
+
+    // Lặp qua mảng quizData để tạo các câu hỏi
+    quizData.forEach((question, index) => {
+        createQuestionElement(question, index);
+    });
+
+    // Hàm kiểm tra câu trả lời
+    function checkAnswer(index) {
+        if (questionsAnswered >= quizData.length) {
+            return; // Ngăn không cho kiểm tra lại khi đã đủ 20 câu
+        }
+
+        const inputElement = document.getElementById(`answer-${index}`);
+        const resultElement = document.getElementById(`result-${index}`);
+        const userAnswer = inputElement.value.trim().toLowerCase();
+        const correctAnswer = quizData[index].answer.toLowerCase();
+        const checkBtn = inputElement.nextElementSibling;
+
+        if (userAnswer === correctAnswer) {
+            resultElement.textContent = "Chính xác! ✅";
+            resultElement.className = "result correct";
+            correctAnswersCount++;
+        } else {
+            resultElement.textContent = `Sai rồi. Đáp án đúng là: "${quizData[index].answer}" ❌`;
+            resultElement.className = "result incorrect";
+        }
+
+        // Vô hiệu hóa ô nhập và nút "Kiểm tra" sau khi đã trả lời
+        inputElement.disabled = true;
+        checkBtn.disabled = true;
+        questionsAnswered++;
+
+        // Kiểm tra nếu đã trả lời đủ 20 câu
+        if (questionsAnswered === quizData.length) {
+            showSummary();
+        }
+    }
+
+    // Hàm hiển thị tổng kết
+    function showSummary() {
+        quizContainer.style.display = 'none'; // Ẩn phần câu hỏi
+        summarySection.style.display = 'block'; // Hiển thị phần tổng kết
+        scoreDisplay.textContent = `${correctAnswersCount} / ${quizData.length}`;
+    }
+</script>
+
+</body>
+</html>
